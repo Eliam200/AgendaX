@@ -14,6 +14,9 @@ def hash_password(password: str):
 def verify_password(plain_password: str, hashed_password: str):
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
+# Crea las tablas si todavía no existen (necesario en un servidor nuevo)
+models.Base.metadata.create_all(bind=engine)
+
 # Inicializacion de la app de FastAPI
 app = FastAPI(title="AgendaX API", version="1.1.0")
 
@@ -58,7 +61,7 @@ def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_
         correo=usuario.correo,
         telefono=usuario.telefono,
         password=hashed_pass,
-        rol=usuario.rol
+        rol="cliente"  # el registro público SIEMPRE crea clientes (barberos/admin los crea seed.py)
     )
     db.add(nuevo_usuario)
     db.commit()
