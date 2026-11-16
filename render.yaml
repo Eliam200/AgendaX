@@ -1,0 +1,14 @@
+# Despliegue del backend en Render (plan gratis). Va en la RAÍZ del repo del backend.
+services:
+  - type: web
+    name: agendax-api
+    runtime: python
+    plan: free
+    rootDir: BACKEND
+    buildCommand: pip install -r requirements.txt
+    # seed.py recrea servicios, barberos y cuentas de demo cada vez que arranca
+    startCommand: python seed.py && python run_server.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
